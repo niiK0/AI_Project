@@ -2651,10 +2651,10 @@ MonoBehaviour:
   targetRb: {fileID: 144825617}
   activateDistance: 100
   pathUpdateSeconds: 0.5
-  speed: 4
+  speed: 800
   nextWaypointDistance: 2
   jumpNodeHeightRequirement: 0.7
-  jumpModifier: 0.3
+  jumpModifier: 0.005
   followEnabled: 1
   jumpEnabled: 1
   directionLookEnabled: 1
@@ -7455,6 +7455,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 772485273}
     m_Modifications:
+    - target: {fileID: 4137434379435913590, guid: 3d8f06d776690ad42bdc3ea30c73ba57, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6578868427600785680, guid: 3d8f06d776690ad42bdc3ea30c73ba57, type: 3}
       propertyPath: m_Name
       value: image 1
