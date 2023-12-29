@@ -80,12 +80,12 @@ public class EnemyAI : MonoBehaviour
         {
             if(target.position.y - 1f > rb.transform.position.y && targetRb.velocity.y == 0 && path.path.Count < 20)
             {
-                rb.AddForce(Vector2.up * speed * jumpModifier);
+                rb.AddForce(Vector2.up * speed * jumpModifier, ForceMode2D.Impulse);
             }
         }
 
 
-        rb.AddForce(force, ForceMode2D.Impulse);
+        rb.AddForce(force, ForceMode2D.Force);
         Debug.Log("Moved");
         
         float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
