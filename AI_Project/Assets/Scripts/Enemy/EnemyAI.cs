@@ -27,7 +27,7 @@ public class EnemyAI : MonoBehaviour
 
     private Path path;
     private int currentWaypoint = 0;
-    //bool isGrounded = false;
+    bool isGrounded = false;
     Seeker seeker;
     Rigidbody2D rb;
     private Collider2D col;   
@@ -42,9 +42,10 @@ public class EnemyAI : MonoBehaviour
         InvokeRepeating("UpdatePath", 0f, pathUpdateSeconds);
     }
 
+
     private void FixedUpdate()
     {
-        if(TargetInDistance() && followEnabled)
+        if (TargetInDistance() && followEnabled)
         {
             PathFollow();
         }
@@ -69,21 +70,10 @@ public class EnemyAI : MonoBehaviour
         {
             return;
         }
-
-        //isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.1f, groundCheckMask);
-        RaycastHit2D isGrounded = Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0, Vector2.down, 0.1f, groundCheckMask);
+        //RaycastHit2D isGrounded = Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0, Vector2.down, 0.1f, groundCheckMask);
 
         Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized;
         Vector2 force = direction * speed * Time.deltaTime;
-
-        if(jumpEnabled && isGrounded)
-        {
-            if(target.position.y - 1f > rb.transform.position.y && targetRb.velocity.y == 0 && path.path.Count < 20)
-            {
-                rb.AddForce(Vector2.up * speed * jumpModifier, ForceMode2D.Impulse);
-            }
-        }
-
 
         rb.AddForce(force, ForceMode2D.Force);
         Debug.Log("Moved");
