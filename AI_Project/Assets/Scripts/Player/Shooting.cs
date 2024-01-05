@@ -9,7 +9,7 @@ public class Shooting : MonoBehaviour
     void Update()
     {
         // Check for mouse click
-        if (Input.GetMouseButtonDown(0)) // Change 0 to 1 for right-click
+        if (Input.GetMouseButtonDown(0))
         {
             Shoot();
         }
@@ -18,23 +18,21 @@ public class Shooting : MonoBehaviour
     void Shoot()
     {
         // Get mouse position in world coordinates
-        Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        // Calculate direction to mouse position
-        Vector2 shootDirection = (mousePosition - (Vector2)firePoint.position).normalized;
+        Vector3 direction = mousePosition - firePoint.position;
+        Vector3 rotation = firePoint.position - mousePosition;
 
-        // Instantiate a bullet at the fire point position
-        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+        float rotZ = Mathf.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg;
 
-        // Rotate the bullet to face the shoot direction
-        float angle = Mathf.Atan2(shootDirection.y, shootDirection.x) * Mathf.Rad2Deg;
-        bullet.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        // Instantiate a bullet at the player's position
+        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.Euler(0, 0, -rotZ + 90));
 
         // Access the Bullet script and set its direction
         Bullet bulletScript = bullet.GetComponent<Bullet>();
         if (bulletScript != null)
         {
-            bulletScript.SetDirection(shootDirection);
+            bulletScript.SetDirection(direction);
         }
     }
 }

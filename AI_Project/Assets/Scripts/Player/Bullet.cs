@@ -3,24 +3,55 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     public float speed = 10f;
-    private Vector2 direction;
+    private Rigidbody2D rb;
+    public ParticleSystem explosionParticle;
+    public Vector2 knockBackForce;
 
-    // Set the direction of the bullet
-    public void SetDirection(Vector2 dir)
+    private void Awake()
     {
-        direction = dir;
+        rb = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        // Move the bullet in the set direction
-        transform.Translate(direction * speed * Time.deltaTime);
+        Destroy(gameObject, 3f);
+    }
 
-        // Destroy the bullet when it goes out of screen
-        if (!GetComponentInChildren<Renderer>().isVisible)
+    // Set the direction of the bullet
+    public void SetDirection(Vector3 direction)
+    {
+        rb.velocity = new Vector2(direction.x, direction.y).normalized * speed;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (!collision.transform.CompareTag("Player") && !collision.transform.CompareTag("Coin"))
         {
-            Destroy(gameObject);
+            if (collision.transform.CompareTag("Enemy"))
+            {
+                collision.GetComponent<EnemyHealth>().TakeDamage();
+                EnemyAI AIEnemy = collision.GetComponent<EnemyAI>();
+                EnemyPatrol PatrolEnemy = collision.GetComponent<EnemyPatrol>();
+
+                if (AIEnemy)
+                {
+                    Vector2 direction = collision.transform.position - transform.position;
+                    AIEnemy.KnockBack(direction * knockBackForce);
+                }
+                if (PatrolEnemy)
+                {
+                    Vector2 direction = collision.transform.position - transform.position;
+                    PatrolEnemy.KnockBack(direction * knockBackForce);
+                }
+            }
+
+            if(collision.transform.CompareTag("Enemy") || collision.gameObject.layer == 3)
+            {
+                ParticleSystem particle = Instantiate(explosionParticle, transform.position, Quaternion.identity);
+                particle.Play();
+                Destroy(gameObject);
+            }
+
         }
     }
 }

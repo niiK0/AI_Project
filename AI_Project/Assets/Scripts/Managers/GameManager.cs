@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
 
     public int Coins { get; set; }
 
+    public GameObject boss;
+
     private void Awake()
     {
         if (Instance != this) Destroy(gameObject);
@@ -20,17 +22,10 @@ public class GameManager : MonoBehaviour
     {
         Coins++;
         UI_Manager.Instance.UpdateCoinsText(Coins.ToString());
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if(Coins == 27)
+        {
+            boss.SetActive(true);
+            UI_Manager.Instance.EnableBossUI();
+        }
     }
 }

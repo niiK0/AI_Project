@@ -6,20 +6,26 @@ using UnityEngine.AI;
 
 public class ShootNode : Node
 {
-    private NavMeshAgent agent;
     private BossAI ai;
+    private float cw;
 
-    public ShootNode(NavMeshAgent agent, BossAI ai)
+    public ShootNode(float cw, BossAI ai)
     {
-        this.agent = agent;
         this.ai = ai;
+        this.cw = cw;
     }
 
     public override NodeState Evaluate()
     {
-        agent.isStopped = true;
-        ai.SetColor(Color.green);
-        //Instanciar projeteis
-        return NodeState.RUNNING;
+        if (cw <= 0)
+        {
+            ai.Shoot();
+            cw = 1;
+            return NodeState.SUCCESS;
+        }
+        else
+        {
+            return NodeState.RUNNING;
+        }
     }
 }

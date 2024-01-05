@@ -9,6 +9,8 @@ public class UI_Manager : MonoBehaviour
 
     public TMP_Text coinsText;
 
+    public GameObject bossUI;
+
     private void Awake()
     {
         Instance = this;
@@ -17,5 +19,10 @@ public class UI_Manager : MonoBehaviour
     public void UpdateCoinsText(string newText)
     {
         coinsText.text = newText;
+    }
+
+    public void EnableBossUI()
+    {
+        bossUI.SetActive(true);
     }
 }

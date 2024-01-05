@@ -103,6 +103,11 @@ public class EnemyPatrol : MonoBehaviour
         }
     }
 
+    public void KnockBack(Vector2 kbForce)
+    {
+        rb.AddForce(kbForce, ForceMode2D.Impulse);
+    }
+
     private void EnterIdleState()
     {
         state = EnemyState.Idle;
@@ -140,5 +145,26 @@ public class EnemyPatrol : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.transform.CompareTag("Player"))
+        {
+            InvokeRepeating("DoDamage", 0f, 1f);
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.transform.CompareTag("Player"))
+        {
+            if (IsInvoking()) CancelInvoke();
+        }
+    }
+
+    public void DoDamage()
+    {
+        player.GetComponent<Health>().TakeDamage();
     }
 }

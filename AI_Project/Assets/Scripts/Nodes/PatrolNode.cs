@@ -6,19 +6,20 @@ using UnityEngine.AI;
 public class PatrolNode : Node
 {
     private Transform target;
-    private Transform origin;
+    private Vector3 currentPoint;
     private BossAI ai;
 
-    public PatrolNode(Transform target, Transform origin)
+    public PatrolNode(Transform target, Vector3 currentPoint, BossAI ai)
     {
         this.target = target;
-        this.origin = origin;
+        this.currentPoint = currentPoint;
+        this.ai = ai;
     }
 
     public override NodeState Evaluate()
     {
-        float distance = Vector3.Distance(target.position, origin.position);
-        if(distance > 0.2f)
+        float distance = Vector3.Distance(target.position, currentPoint);
+        if(distance > 0.1f)
         {
             ai.Patrol();
             return NodeState.RUNNING;

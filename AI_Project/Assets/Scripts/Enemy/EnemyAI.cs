@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
-using UnityEditor.Build;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -24,6 +23,8 @@ public class EnemyAI : MonoBehaviour
     public bool directionLookEnabled = true;
     public Transform groundCheck;
     public LayerMask groundCheckMask;
+    public SpriteRenderer renderer;
+    public float stopDistance;
 
     private Path path;
     private int currentWaypoint = 0;
@@ -57,6 +58,10 @@ public class EnemyAI : MonoBehaviour
         {
             seeker.StartPath(rb.position, target.position, OnPathComplete);
         }
+        else
+        {
+            seeker.CancelCurrentPathRequest();
+        }
     }
 
     private void PathFollow()
@@ -70,6 +75,12 @@ public class EnemyAI : MonoBehaviour
         {
             return;
         }
+        
+        if(Vector2.Distance(transform.position, target.position) <= stopDistance)
+        {
+            return;
+        }
+
         //RaycastHit2D isGrounded = Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0, Vector2.down, 0.1f, groundCheckMask);
 
         Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized;
@@ -89,13 +100,18 @@ public class EnemyAI : MonoBehaviour
         {
             if(rb.velocity.x < -0.05f)
             {
-                transform.localScale = new Vector3(-1f * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+                renderer.flipX = true;
             }
             else if(rb.velocity.x > 0.05f)
             {
-                transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+                renderer.flipX = false;
             }
         }
+    }
+
+    public void KnockBack(Vector2 kbForce)
+    {
+        rb.AddForce(kbForce, ForceMode2D.Impulse);
     }
 
     private bool TargetInDistance()
